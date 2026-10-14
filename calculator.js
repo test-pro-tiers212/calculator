@@ -46,7 +46,12 @@ function sqrt(value) {
 }
 /** Return the specified percentage of a finite value. */
 function percentage(value, percent) {
-  return multiply(divide(percent, 100), value);
+  finite(value);
+  finite(percent);
+  // Scale the larger operand so tiny percentages do not underflow prematurely.
+  return Math.abs(value) >= Math.abs(percent)
+    ? multiply(divide(value, 100), percent)
+    : multiply(divide(percent, 100), value);
 }
 
 module.exports = { add, subtract, multiply, divide, modulo, power, sqrt, percentage };

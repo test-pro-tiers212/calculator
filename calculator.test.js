@@ -18,6 +18,15 @@ test('arithmetic handles negative numbers, decimals, and zero', () => {
   assert.equal(calculator.multiply(-1, 0), 0);
 });
 
+test('percentages preserve small representable results with large operands', () => {
+  const expected = (1e308 * Number.MIN_VALUE) / 100;
+  assert.ok(expected > 0);
+  assert.equal(calculator.percentage(1e308, Number.MIN_VALUE), expected);
+  assert.equal(calculator.percentage(Number.MIN_VALUE, 1e308), expected);
+  assert.equal(calculator.percentage(-1e308, Number.MIN_VALUE), -expected);
+  assert.equal(calculator.percentage(1e308, -Number.MIN_VALUE), -expected);
+});
+
 test('rejects invalid operands and arithmetic domains', () => {
   for (const name of ['add', 'subtract', 'multiply', 'divide', 'modulo', 'power', 'percentage']) {
     for (const invalid of ['2', NaN, Infinity, undefined, null]) {
