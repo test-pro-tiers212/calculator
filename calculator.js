@@ -36,4 +36,22 @@ function modulo(a, b) {
   if (b === 0) throw new RangeError('Cannot take a remainder with zero');
   return result(a % b);
 }
-module.exports = { add, subtract, multiply, divide, modulo };
+/** Raise a finite base to a finite exponent, rejecting non-real results. */
+function power(a, b) { return result(finite(a) ** finite(b)); }
+/** Return the real square root of a nonnegative finite number. */
+function sqrt(value) {
+  finite(value);
+  if (value < 0) throw new RangeError('Cannot take the square root of a negative number');
+  return result(Math.sqrt(value));
+}
+/** Return the specified percentage of a finite value. */
+function percentage(value, percent) {
+  finite(value);
+  finite(percent);
+  // Scale the larger operand so tiny percentages do not underflow prematurely.
+  return Math.abs(value) >= Math.abs(percent)
+    ? multiply(divide(value, 100), percent)
+    : multiply(divide(percent, 100), value);
+}
+
+module.exports = { add, subtract, multiply, divide, modulo, power, sqrt, percentage };
