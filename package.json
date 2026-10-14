@@ -2,9 +2,10 @@
   "name": "calculator",
   "version": "1.0.0",
   "private": true,
-  "description": "A dependency-free arithmetic calculator API",
+  "description": "A dependency-free arithmetic calculator and command-line expression evaluator",
   "main": "calculator.js",
   "scripts": {
+    "start": "node calculator.js",
     "test": "node --test"
   },
   "engines": {
