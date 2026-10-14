@@ -1,5 +1,6 @@
 'use strict';
 
+/** Validate a finite numeric operand without coercion. */
 function finite(value) {
   if (typeof value !== 'number' || !Number.isFinite(value)) {
     throw new TypeError('Expected a finite number');
@@ -7,6 +8,7 @@ function finite(value) {
   return value;
 }
 
+/** Reject non-finite results and normalize negative zero. */
 function result(value) {
   if (!Number.isFinite(value)) {
     throw new RangeError('Result is outside the range of finite real numbers');
@@ -14,27 +16,35 @@ function result(value) {
   return Object.is(value, -0) ? 0 : value;
 }
 
+/** Add two finite numbers. */
 function add(a, b) { return result(finite(a) + finite(b)); }
+/** Subtract the second finite number from the first. */
 function subtract(a, b) { return result(finite(a) - finite(b)); }
+/** Multiply two finite numbers. */
 function multiply(a, b) { return result(finite(a) * finite(b)); }
+/** Divide two finite numbers, rejecting a zero divisor. */
 function divide(a, b) {
   finite(a);
   finite(b);
   if (b === 0) throw new RangeError('Cannot divide by zero');
   return result(a / b);
 }
+/** Return the remainder with the dividend sign, rejecting zero divisors. */
 function modulo(a, b) {
   finite(a);
   finite(b);
   if (b === 0) throw new RangeError('Cannot take a remainder with zero');
   return result(a % b);
 }
+/** Raise a finite base to a finite exponent, rejecting non-real results. */
 function power(a, b) { return result(finite(a) ** finite(b)); }
+/** Return the real square root of a nonnegative finite number. */
 function sqrt(value) {
   finite(value);
   if (value < 0) throw new RangeError('Cannot take the square root of a negative number');
   return result(Math.sqrt(value));
 }
+/** Return the specified percentage of a finite value. */
 function percentage(value, percent) {
   return multiply(divide(percent, 100), value);
 }
@@ -49,6 +59,7 @@ const operators = {
 };
 
 // Parse arithmetic only: expressions never execute JavaScript.
+/** Evaluate bounded arithmetic expressions without executing JavaScript. */
 function evaluate(expression) {
   if (typeof expression !== 'string' || expression.trim() === '') {
     throw new TypeError('Expected a non-empty expression');
@@ -65,6 +76,7 @@ function evaluate(expression) {
     offset = pattern.lastIndex;
   }
   let cursor = 0;
+  /** Parse a precedence-bounded expression with a recursion limit. */
   function parse(minimum = 0, depth = 0) {
     if (depth > 128) throw new RangeError('Expression is too deeply nested');
     const token = tokens[cursor++];

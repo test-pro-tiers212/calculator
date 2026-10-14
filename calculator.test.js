@@ -55,6 +55,7 @@ test('rejects malformed expressions and executable input', () => {
   assert.throws(() => calculator.evaluate('('.repeat(130) + '1' + ')'.repeat(130)), /deeply nested/);
 });
 
+/** Execute the calculator CLI and capture its output and exit status. */
 const run = (...args) => spawnSync(process.execPath, [path.join(__dirname, 'calculator.js'), ...args], { encoding: 'utf8' });
 
 test('CLI prints results and reports errors through exit status and stderr', () => {
